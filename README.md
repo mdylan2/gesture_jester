@@ -26,7 +26,7 @@ git clone https://github.com/mdylan2/hand_gesture_recognition.git
 ```
 pip install -r requirements.txt
 ```
-4) Download `my_model_weights.h5` from [this Kaggle link] and store the file in the src folder. The model was trained on data 
+4) Download `my_model_weights.h5` from [this Kaggle link](https://www.kaggle.com/dylanmendonca/training-hand-gesture-model) and store the file in the src folder. The model was trained on data 
 that I collected through the 'data collection mode' of the app. If you find that my trained model doesn't work well for you or you feel like you need more gestures,
 you can train the model using images of your own hand. Please refer to the Kaggle link for more information on building or training the model.
 5) Navigate into the src folder and run the following command:
@@ -49,5 +49,6 @@ python demo.py
 ![Gesture Mode](images/2.PNG)
 
 ## Questions Or Contributions
-I have tried to include as much instruction for use on the app. Please let me know if you have any further questions.
+I have tried to include as much instruction for use on the app GUI. Please let me know if you have any further questions.
+I didn't put much focus into the Music Player (was more of a proof of concept) so there might be a lot of bugs in there. 
 And, as always I'm very open to any recommendations or contributions! Please reach out to me on Github if you would like to chat.
