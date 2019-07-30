@@ -33,22 +33,53 @@ you can train the model using images of your own hand. Please refer to the Kaggl
 ```
 python demo.py
 ```
-6) More information on using the features can be seen in the application interface
+6) Some of the features have been included in the snippets in the Application Interface section
+
+## Gesture Recognition Model
+The model was built to recognize 7 different hand gestures and the absence of a hand. The encoding of the gestures is included in the demo file under the variable `GESTURE_ENCODINGS`. 
+List of gestures recognized (in the order of the encodings):
+1. Fist
+![Fist](imagesandgifs/fist.png)
+2. Five
+![Five](imagesandgifs/five.png)
+3. None
+![None](imagesandgifs/none.png)
+4. Okay
+![Okay](imagesandgifs/okay.png)
+5. Peace
+![Peace](imagesandgifs/peace.png)
+6. Rad
+![Rad](imagesandgifs/rad.png)
+7. Straight
+![Straight](imagesandgifs/straight.png)
+8. Thumbs
+![Thumbs](imagesandgifs/thumbs.png)
+
+## Music Player Model (Gesture Mode)
+Currently the system is set up to recognize 6 gestures:
+1. `Rad`: Loads the song (I Saw Her Standing There)
+2. `Fist`: Plays/unpauses the song
+3. `Five`: Pauses the song
+4. `Okay`: Increases the volume. Hold the pose to continue increasing the volume
+5. `Peace`: Decreases the volume. Hold the pose to continue decreasing the volume
+6. `Straight`: Stops the song
+7. `None`: Does nothing
 
 ## Application Interface
 ### `Capture Background`
-![Capture Background](images/2.PNG)
+![Capture Background](imagesandgifs/capturingback.gif)
 
 ### `Data Collection Mode`
-![Collect Data](images/3.PNG)
+![Collect Data](imagesandgifs/datamode.PNG)
+![Collect Data 2](imagesandgifs/collectingdata.gif)
 
 ### `Testing Model Mode`
-![Test Model](images/2.PNG)
+![Test Model](imagesandgifs/testing_model.gif)
 
 ### `Gesture Mode (Music Player)`
 ![Gesture Mode](images/2.PNG)
 
-## Questions Or Contributions
-I have tried to include as much instruction for use on the app GUI. Please let me know if you have any further questions.
-I didn't put much focus into the Music Player (was more of a proof of concept) so there might be a lot of bugs in there. 
-And, as always I'm very open to any recommendations or contributions! Please reach out to me on Github if you would like to chat.
+## Questions/Contributions/Future Work
+- I have tried to include as much instruction for use on the app GUI. Please let me know if you have any further questions.
+- I didn't put much focus into the Music Player (was more of a proof of concept) so there might be a lot of bugs in there. I'm hoping to continue building GUI features around the music player so the user can see the volume, current song, etc.
+- Last but not least, I'm very open to any recommendations or contributions! Please reach out to me on Github if you would like to chat.
