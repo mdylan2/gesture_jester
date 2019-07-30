@@ -3,9 +3,9 @@
 This repository contains the Python code to develop your own hand gesture recognition system. 
 
 The app consists of 3 different modes:
-1. Data Collection Mode: Allows the user to collect train, test, or validation data on a variety of hand gestures
-2. Model Testing Mode: Test the model's ability to discern between different gestures through real-time visualizations
-3. Music-Player/Gesture Mode: Use gestures to play music, pause music, and change the volume of music
+1. __**Data Collection Mode:**__ Allows the user to collect train, test, or validation data on a variety of hand gestures
+2. __**Model Testing Mode:**__ Test the model's ability to discern between different gestures through real-time visualizations
+3. __**Music-Player/Gesture Mode:**__ Use gestures to play music, pause music, and change the volume of music
 
 The application was designed using OpenCV, Keras, PyGame and Numpy.
 
