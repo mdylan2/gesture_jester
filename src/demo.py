@@ -46,9 +46,9 @@ SONG = 'The Beatles - I Saw Her Standing There.mp3'
 
 # Data Collection Mode variables
 DATAMODE = False
-WHERE = "test"
+WHERE = "train"
 GESTURE = "okay"
-NUMBERTOCAPTURE = 0
+NUMBERTOCAPTURE = 100
 
 # Testing Predictions of Model Mode variables
 PREDICT = False
@@ -76,12 +76,13 @@ class MusicMan(object):
     def play(self):
         if self.state == "pause":
             self.player.unpause()
+            self.state = "play"
         elif self.state != "play":
             self.player.play()
             self.state = "play" 
         
     def pause(self):
-        if self.state != "pause":
+        if self.state != "pause" or self.state == "stop":
             self.player.pause()
             self.state = "pause"
         
@@ -92,7 +93,9 @@ class MusicMan(object):
         self.player.set_volume(self.player.get_volume() + 0.05)
     
     def stop(self):
-        self.player.stop()
+        if self.state != "stop":
+            self.player.stop()
+            self.state = "stop"
 
 
 
@@ -182,7 +185,7 @@ def drawSideFrame(historic_predictions, frame, modelName, label):
         cv2.putText(score_frame, 'Press G to turn of gesture mode', (20,25), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Model : {modelName}', (20,50), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Data source : {dataText}', (20, 75), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(score_frame, f'Song on Queue : {music.song}', (20, 100), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, f'Song : {music.song}', (20, 100), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Label : {GESTURE_ENCODING[label]}', (20, 125), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
 
 
@@ -215,7 +218,7 @@ def drawSideFrame(historic_predictions, frame, modelName, label):
         average_predictions = predictions.mean(axis = 0)[0]
         sorted_args = list(np.argsort(average_predictions))
 
-        start_pixels = np.array([20, 125])
+        start_pixels = np.array([20, 150])
         for count, arg in enumerate(list(reversed(sorted_args))):
             
             probability = round(average_predictions[arg])
@@ -239,9 +242,11 @@ def drawSideFrame(historic_predictions, frame, modelName, label):
 
     else:
         cv2.putText(score_frame, 'Press P to test model', (20,25), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(score_frame, 'Press G for gesture mode', (20,50), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(score_frame, f'Model : {modelName}', (20,75), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(score_frame, f'Data source : {dataText}', (20, 100), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, 'Press G for Gesture Mode', (20,50), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, 'Press R to reset background', (20,75), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, f'Model : {modelName}', (20,100), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, f'Data source : {dataText}', (20, 125), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        music.stop()
 
     return np.hstack((score_frame, frame))
 
@@ -351,7 +356,7 @@ if __name__ == '__main__':
             # Datamode
             if DATAMODE:
                 time.sleep(0.03)
-                cv2.imwrite(DIR_NAME + f"/{img_label}.png", thresh)
+                cv2.imwrite(f"./data/{WHERE}/{GESTURE}" + f"/{img_label}.png", thresh)
                 cv2.putText(new_frame, "Photos Captured:",(980,400), FONT, 0.7, (0,0,0), 2, cv2.LINE_AA)
                 cv2.putText(new_frame, f"{i}/{NUMBERTOCAPTURE}",(1010,430), FONT, 0.7, (0,0,0), 2, cv2.LINE_AA)
                 img_label +=  1
@@ -400,6 +405,7 @@ if __name__ == '__main__':
                 DATAMODE = False
                 PREDICT = False    
                 GESTUREMODE = not GESTUREMODE
+
 
         cap.release()
         cv2.destroyAllWindows()

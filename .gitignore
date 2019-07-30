@@ -103,8 +103,8 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# Images
-*.png
+# Images in Data Folder
+data/
 
 # Zip files
 *.zip
