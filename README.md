@@ -70,8 +70,8 @@ Currently the system is set up to recognize 6 gestures:
 ![Capture Background](imagesandgifs/capturingback.gif)
 
 ### `Data Collection Mode`
-![Collect Data](imagesandgifs/datamode.PNG)
-![Collect Data 2](imagesandgifs/collectingdata.gif)
+![Collect Data](imagesandgifs/datamode.png)
+![Collect Data 2](imagesandgifs/collecting_data.gif)
 
 ### `Testing Model Mode`
 ![Test Model](imagesandgifs/testing_model.gif)
