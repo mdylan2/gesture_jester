@@ -42,7 +42,8 @@ THRESHOLD = 50
 # Gesture Mode variables
 GESTUREMODE = False
 GESTURES_RECORDED = [10,10,10,10,10,10,10,10,10,10]
-SONG = 'The Beatles - I Saw Her Standing There.mp3'
+SONG = 'The Beatles - I Saw Her Standing There'
+ACTIONS_GESTURE_ENCODING = {'fist': 'Play/Unpause', 'five': 'Pause', 'none': 'Do Nothing', 'okay': 'Increase Volume', 'peace': 'Decrease Volume', 'rad': "Load Song", 'straight': "Stop", "thumbs":"NA"}
 
 # Data Collection Mode variables
 DATAMODE = False
@@ -66,34 +67,37 @@ class MusicMan(object):
         pygame.mixer.init()
         self.player = pygame.mixer.music
         self.song = file
-        self.file = f"./music/{file}"
+        self.file = f"./music/{file}.mp3"
         self.state = None
     
     def load(self):
-        self.player.load(self.file)
-        self.state = "loaded"
+        if self.state is None:
+            self.player.load(self.file)
+            self.state = "loaded"
     
     def play(self):
         if self.state == "pause":
             self.player.unpause()
             self.state = "play"
-        elif self.state != "play":
+        elif self.state in ["loaded","stop"]:
             self.player.play()
             self.state = "play" 
         
     def pause(self):
-        if self.state != "pause" or self.state == "stop":
+        if self.state == "play":
             self.player.pause()
             self.state = "pause"
         
     def increase_volume(self):
-        self.player.set_volume(self.player.get_volume() - 0.05)
+        if self.state is not None:
+            self.player.set_volume(self.player.get_volume() - 0.02)
     
     def decrease_volume(self):
-        self.player.set_volume(self.player.get_volume() + 0.05)
+        if self.state is not None:
+            self.player.set_volume(self.player.get_volume() + 0.02)
     
     def stop(self):
-        if self.state != "stop":
+        if self.state == "play":
             self.player.stop()
             self.state = "stop"
 
@@ -149,8 +153,12 @@ def find_last_rep(array):
     last_element = array[-1]
     count = 0
     for ele in reversed(array):
-        count += 1 if last_element == ele else 0
+        if last_element == ele:
+            count += 1
+        else:
+            return count, count/len(array)
     return count, count/len(array)
+    
 
 # Draw frame to side of video capture. Populate this frame with front
 # end for gesture and prediction modes
@@ -167,27 +175,6 @@ def drawSideFrame(historic_predictions, frame, modelName, label):
         GESTURES_RECORDED.append(label)
         GESTURES_RECORDED = GESTURES_RECORDED[-10:]
         count, percent_finished = find_last_rep(GESTURES_RECORDED)
-        
-        if percent_finished == 1:
-            color = (0,204,102)
-        else:
-            color = (20,20,220)
-
-        start_pixels = np.array([20, 150])
-        text = '{} ({}%)' .format(GESTURE_ENCODING[GESTURES_RECORDED[-1]], percent_finished*100)
-        cv2.putText(score_frame ,text , tuple(start_pixels), FONT, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-        chart_start = start_pixels + np.array([0, BARCHARTOFFSET])
-        length = int(percent_finished * BARCHARTLENGTH)
-        chart_end = chart_start + np.array(
-            [length, BARCHARTTHICKNESS])
-        cv2.rectangle(score_frame , tuple(chart_start), tuple(chart_end), color, cv2.FILLED)
-
-        cv2.putText(score_frame, 'Press G to turn of gesture mode', (20,25), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(score_frame, f'Model : {modelName}', (20,50), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(score_frame, f'Data source : {dataText}', (20, 75), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(score_frame, f'Song : {music.song}', (20, 100), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(score_frame, f'Label : {GESTURE_ENCODING[label]}', (20, 125), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-
 
         if len(set(GESTURES_RECORDED)) == 1:
             command = GESTURE_ENCODING[GESTURES_RECORDED[-1]]
@@ -207,6 +194,27 @@ def drawSideFrame(historic_predictions, frame, modelName, label):
                 music.stop()
             elif command == "thumbs":
                 pass
+
+        if percent_finished == 1:
+            color = (0,204,102)
+        else:
+            color = (20,20,220)
+
+        start_pixels = np.array([20, 175])
+        text = '{} ({}%)' .format(GESTURE_ENCODING[GESTURES_RECORDED[-1]], percent_finished*100)
+        cv2.putText(score_frame ,text , tuple(start_pixels), FONT, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+        chart_start = start_pixels + np.array([0, BARCHARTOFFSET])
+        length = int(percent_finished * BARCHARTLENGTH)
+        chart_end = chart_start + np.array(
+            [length, BARCHARTTHICKNESS])
+        cv2.rectangle(score_frame , tuple(chart_start), tuple(chart_end), color, cv2.FILLED)
+
+        cv2.putText(score_frame, 'Press G to turn of gesture mode', (20,25), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, f'Model : {modelName}', (20,50), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, f'Data source : {dataText}', (20, 75), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, f'Song : {music.song}', (20, 100), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, f'Label : {GESTURE_ENCODING[label]}', (20, 125), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(score_frame, f'Action : {ACTIONS_GESTURE_ENCODING[GESTURE_ENCODING[label]]}', (20, 150), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
 
     elif PREDICT:
         cv2.putText(score_frame, 'Press P to stop testing predictions', (20,25), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)

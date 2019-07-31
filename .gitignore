@@ -114,3 +114,6 @@ data/
 
 # Model Weights
 *.h5
+
+# Youtube Video
+youtube_video/
