@@ -77,8 +77,8 @@ Currently the system is set up to recognize 6 gestures:
 ![Test Model](imagesandgifs/testing_model.gif)
 
 ### `Gesture Mode (Music Player)`
-[![Youtube Link](imagesandgifs/gesture_mode.PNG)](https://youtu.be/tW2qzu4mAQE)
->  **Note: YouTube clip was made with different song due to copyright issues**
+[![Youtube Link](imagesandgifs/gesture_mode.PNG)](https://vimeo.com/user78241622/review/351121225/4a8222a17c)
+>  **Note: Video is actually on Vimeo. Blame YouTube and its copyright issues**
 
 ## Questions/Contributions/Future Work
 - I have tried to include as much instruction for use on the app GUI. Please let me know if you have any further questions.
