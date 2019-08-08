@@ -1,4 +1,4 @@
-# Hand Gesture Recognition App
+# Gesture Jester
 ## Description
 This repository contains the Python code to develop your own hand gesture recognition system. 
 
