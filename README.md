@@ -10,7 +10,7 @@ The app consists of 3 different modes:
 The application was designed using OpenCV, Keras, PyGame and Numpy.
 
 ## Files
-Here's a list of files in the directories:
+Here's a list of files in the directory:
 ### `src`
 - `demo.py`: Contains all the functions to start and run the app
 - `music`: Contains the song that will be played during 'gesture mode'
@@ -19,7 +19,7 @@ Here's a list of files in the directories:
 In order to start the application, do the following:
 1) Clone the repo
 ```
-git clone https://github.com/mdylan2/hand_gesture_recognition.git
+git clone https://github.com/mdylan2/gesture_jester.git
 ```
 2) Navigate into the folder, set up a virtual environment and activate it
 3) Once you've activated the virtual environment, install the requirements
