@@ -117,3 +117,6 @@ data/
 
 # Youtube Video
 youtube_video/
+
+# Powerpoints
+*.pptx
