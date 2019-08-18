@@ -17,9 +17,9 @@ I presented this app as my final project for a coding bootcamp I attended. The s
 
 ## Files
 Here's a list of files in the directory:
-### `src`
-- `demo.py`: Contains all the functions to start and run the app
-- `music`: Contains the song that will be played during 'gesture mode'
+- `src/demo.py`: Contains all the functions to start and run the app
+- `src/music`: Contains the song that will be played during 'gesture mode'
+- `Presentation (Gesture Jester)`: Contains the slide deck for my project presentation
 
 ## Usage
 In order to start the application, do the following:
