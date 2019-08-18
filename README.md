@@ -7,7 +7,13 @@ The app consists of 3 different modes:
 2. __**Model Testing Mode:**__ Test the model's ability to discern between different gestures through real-time visualizations
 3. __**Music-Player/Gesture Mode:**__ Use gestures to play music, pause music, and change the volume of music
 
-The application was designed using OpenCV, Keras, PyGame and Numpy.
+I presented this app as my final project for a coding bootcamp I attended. The slide deck for my presentation has been included in the repository.
+
+## Packages Used
+- OpenCV 
+- Keras
+- PyGame
+- NumPy
 
 ## Files
 Here's a list of files in the directory:
