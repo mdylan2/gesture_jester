@@ -39,19 +39,19 @@ BGSUBTHRESHOLD = 50
 THRESHOLD = 50
 
 # Gesture Mode variables
-GESTUREMODE = False
+GESTUREMODE = False # Don't ever edit this!
 GESTURES_RECORDED = [10,10,10,10,10,10,10,10,10,10]
 SONG = 'The Beatles - I Saw Her Standing There'
 ACTIONS_GESTURE_ENCODING = {'fist': 'Play/Unpause', 'five': 'Pause', 'none': 'Do Nothing', 'okay': 'Increase Volume', 'peace': 'Decrease Volume', 'rad': "Load Song", 'straight': "Stop", "thumbs":"NA"}
 
 # Data Collection Mode variables
-DATAMODE = False
+DATAMODE = False # Don't ever edit this!
 WHERE = "train"
 GESTURE = "okay"
 NUMBERTOCAPTURE = 100
 
 # Testing Predictions of Model Mode variables
-PREDICT = False
+PREDICT = False # Don't ever edit this!
 HISTORIC_PREDICTIONS = [np.ones((1,8)), np.ones((1,8)), np.ones((1,8)), np.ones((1,8)), np.ones((1,8))]
 IMAGEAVERAGING = 5
 
@@ -59,7 +59,7 @@ IMAGEAVERAGING = 5
 '''
 MUSIC PLAYER CLASS
 '''
-# Music Player Class
+# Music Player Class. Contains functions to load, play, pause, adjust volume, and stop music
 class MusicMan(object):
     def __init__(self, file):
         print("Loading music player...")
@@ -105,7 +105,7 @@ class MusicMan(object):
 '''
 USEFUL FUNCTIONS
 '''
-# Creating a path
+# Creating a path for storing data
 def create_path(WHERE, GESTURE):
     print("Creating path to store data for collection...")
     DIR_NAME = f"./data/{WHERE}/{GESTURE}"
@@ -117,7 +117,7 @@ def create_path(WHERE, GESTURE):
         img_label = int(sorted(os.listdir(DIR_NAME), key = len)[-1][:-4])
     return img_label
 
-# Create model
+# Creating our deep learning model to recognize the hand image
 def create_model(outputSize):
     model = Sequential()
     model.add(Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', input_shape = (256,256,1)))
@@ -137,7 +137,7 @@ def create_model(outputSize):
 
     return model
 
-# Load model function
+# Function to load the model
 def load_model(outputSize, weight_url):
     # Loading the model
     modelName = 'Hand Gesture Recognition'
@@ -147,7 +147,10 @@ def load_model(outputSize, weight_url):
 
     return model, modelName
 
-# Find the number of times the last element of an array has occured before that
+# Function that counts the number of times the last element is repeated (starting at the end of the array) 
+# without any gap. Returns the count and the percentage (count/length of array) 
+# For example [1, 1, 1, 2] would return 1, 0.25 while [1,1,2,2] would return 2, 0.5
+# [1,1,1,1] would return 4, 1
 def find_last_rep(array):
     last_element = array[-1]
     count = 0
@@ -169,14 +172,17 @@ def drawSideFrame(historic_predictions, frame, modelName, label):
     # Creating the score frame
     score_frame = 200*np.ones((IMAGEHEIGHT,SCOREBOXWIDTH,3), np.uint8)
 
-    # Putting text
+    # GESTURE MODE front end stuff
     if GESTUREMODE:
         GESTURES_RECORDED.append(label)
         GESTURES_RECORDED = GESTURES_RECORDED[-10:]
         count, percent_finished = find_last_rep(GESTURES_RECORDED)
-
+        
+        # If the array recording the timeline of gestures only contains one gesture
         if len(set(GESTURES_RECORDED)) == 1:
+            # See the command
             command = GESTURE_ENCODING[GESTURES_RECORDED[-1]]
+            # Use the Music Class to play the command accordingly
             if command == "fist":
                 music.play()
             elif command == "five":
@@ -193,12 +199,14 @@ def drawSideFrame(historic_predictions, frame, modelName, label):
                 music.stop()
             elif command == "thumbs":
                 pass
-
+        
+        # Colors of the bar graph showing progress of the gesture recognition
         if percent_finished == 1:
             color = (0,204,102)
         else:
             color = (20,20,220)
-
+        
+        # Drawing the bar chart
         start_pixels = np.array([20, 175])
         text = '{} ({}%)' .format(GESTURE_ENCODING[GESTURES_RECORDED[-1]], percent_finished*100)
         cv2.putText(score_frame ,text , tuple(start_pixels), FONT, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
@@ -207,24 +215,29 @@ def drawSideFrame(historic_predictions, frame, modelName, label):
         chart_end = chart_start + np.array(
             [length, BARCHARTTHICKNESS])
         cv2.rectangle(score_frame , tuple(chart_start), tuple(chart_end), color, cv2.FILLED)
-
+        
+        # Adding text
         cv2.putText(score_frame, 'Press G to turn of gesture mode', (20,25), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Model : {modelName}', (20,50), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Data source : {dataText}', (20, 75), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Song : {music.song}', (20, 100), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Label : {GESTURE_ENCODING[label]}', (20, 125), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Action : {ACTIONS_GESTURE_ENCODING[GESTURE_ENCODING[label]]}', (20, 150), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
-
+       
+    # PREDICT MODE front end stuff
     elif PREDICT:
         cv2.putText(score_frame, 'Press P to stop testing predictions', (20,25), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Model : {modelName}', (20,50), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, f'Data source : {dataText}', (20, 75), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         
+        # Converting predictions into an array
         predictions = np.array(historic_predictions)
-
+        
+        # Taking a mean of historic predictions
         average_predictions = predictions.mean(axis = 0)[0]
         sorted_args = list(np.argsort(average_predictions))
-
+        
+        # Drawing the prediction probabilities in a bar chart
         start_pixels = np.array([20, 150])
         for count, arg in enumerate(list(reversed(sorted_args))):
             
@@ -246,7 +259,8 @@ def drawSideFrame(historic_predictions, frame, modelName, label):
             cv2.rectangle(score_frame , tuple(chart_start), tuple(chart_end), color, cv2.FILLED)
 
             start_pixels = start_pixels + np.array([0, BARCHARTGAP+BARCHARTTHICKNESS+BARCHARTOFFSET])
-
+    
+    # No mode active front end stuff
     else:
         cv2.putText(score_frame, 'Press P to test model', (20,25), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(score_frame, 'Press G for Gesture Mode', (20,50), FONT, 0.55, (0, 0, 0), 2, cv2.LINE_AA)
@@ -278,12 +292,14 @@ def capture_background():
         
         k = cv2.waitKey(5)
         
+        # If key b is pressed
         if k == ord('b'):
             bgModel = cv2.createBackgroundSubtractorMOG2(0, BGSUBTHRESHOLD)
             # cap.release()
             cv2.destroyAllWindows()
             break
-
+        
+        # If key q is pressed
         elif k == ord('q'):
             bgModel = None
             cap.release()
@@ -311,12 +327,18 @@ def drawMask(frame, mask):
 
 
 if __name__ == '__main__':
+    # Create a path for the data collection
     img_label = create_path(WHERE, GESTURE)
+   
+    # Load dependencies
     model, modelName = load_model(NUMBEROFGESTURES,WEIGHTS_URL)
     music = MusicMan(SONG) 
     print("Starting live video stream...")
+    
+    # Background capture model
     bgModel = capture_background()
-
+    
+    # If a background has been captured
     if bgModel:
 
         cap = cv2.VideoCapture(0)
@@ -332,21 +354,21 @@ if __name__ == '__main__':
             frame = cv2.bilateralFilter(frame, 5, 50, 100)
             
             cv2.rectangle(frame, (LEFT,TOP), (RIGHT, BOTTOM), (0,0,0), 1)
+            
+            # Remove background
+            no_background = remove_background(bgModel, frame)
 
-            if bgModel:
-                no_background = remove_background(bgModel, frame)
+            # Selecting region of interest
+            roi = no_background[TOP:BOTTOM, LEFT:RIGHT]
 
-                # Selecting region of interest
-                roi = no_background[TOP:BOTTOM, LEFT:RIGHT]
+            # Converting image to gray
+            gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
 
-                # Converting image to gray
-                gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+            # Blurring the image
+            blur = cv2.GaussianBlur(gray, (41, 41), 0)
 
-                # Blurring the image
-                blur = cv2.GaussianBlur(gray, (41, 41), 0)
-
-                # Thresholding the image
-                ret, thresh = cv2.threshold(blur, THRESHOLD, 255, cv2.THRESH_BINARY)        
+            # Thresholding the image
+            ret, thresh = cv2.threshold(blur, THRESHOLD, 255, cv2.THRESH_BINARY)        
             
             # Predicting and storing predictions
             prediction = model.predict(thresh.reshape(1,256,256,1)/255)
@@ -360,7 +382,7 @@ if __name__ == '__main__':
             # Draw new dataframe with mask
             new_frame = drawMask(new_frame,thresh)
             
-            # Datamode
+            # If Datamode
             if DATAMODE:
                 time.sleep(0.03)
                 cv2.imwrite(f"./data/{WHERE}/{GESTURE}" + f"/{img_label}.png", thresh)
@@ -402,17 +424,18 @@ if __name__ == '__main__':
                 DATAMODE = True
                 i = 1
             
+            # If p is pressed, predict
             if key == ord('p'):
                 GESTUREMODE = False
                 DATAMODE = False
                 PREDICT = not PREDICT
                 
-
+            # If g is pressed go into music player/gesture mode
             if key == ord('g'):
                 DATAMODE = False
                 PREDICT = False    
                 GESTUREMODE = not GESTUREMODE
 
-
+        # Release the cap and close all windows if loop is broken
         cap.release()
         cv2.destroyAllWindows()
