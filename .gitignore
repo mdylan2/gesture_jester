@@ -118,5 +118,5 @@ data/
 # Youtube Video
 youtube_video/
 
-# Powerpoints
-*.pptx
+# VS
+src/.vs/
