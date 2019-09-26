@@ -82,7 +82,7 @@ Currently the system is set up to recognize 6 gestures:
 ### `Testing Model Mode`
 ![Test Model](imagesandgifs/testing_model.gif)
 
-### `Gesture Mode (Music Player)`
+### `Gesture Mode (Music Player)`[Click the Image below!]
 [![Youtube Link](imagesandgifs/gesture_mode.PNG)](https://vimeo.com/351121225)
 >  **Note: Video is actually on Vimeo. Blame YouTube and its copyright issues**
 
